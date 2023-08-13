@@ -1,0 +1,18 @@
+
+  
+  /* Estilo para el texto del tooltip personalizado */
+  [tooltip]:hover::after {
+    content: attr(tooltip); /* Mostrar el texto definido en el atributo title */
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: rgba(0, 0, 0, 0.8);
+    color: #fff;
+    padding: 5px;
+    border-radius: 4px;
+    font-size: 14px;
+    white-space: nowrap;
+    display: block; /* Mostrar el tooltip personalizado cuando el usuario coloca el cursor */
+  }
+  

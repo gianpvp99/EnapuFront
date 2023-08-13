@@ -1,0 +1,375 @@
+<!-- Content Header (Page header) -->
+<div class="content-header">
+  <div class="container-fluid">
+      <div class="row mb-2">
+          <div class="col-sm-6">
+              <h1 class="m-0">Usuario <i class="nav-icon fas fa-users-cog"></i></h1>
+          </div><!-- /.col -->
+          <div class="col-sm-6">
+              <ol class="breadcrumb float-sm-right">
+                  <li class="breadcrumb-item"><a href="dashboard">Inicio</a></li>
+                  <li class="breadcrumb-item active">Usuario</li>
+              </ol> 
+          </div><!-- /.col -->
+      </div><!-- /.row -->
+  </div><!-- /.container-fluid -->
+</div>
+<!-- /.content-header -->
+
+<section class="content">
+<div class="card">
+  <div class="card-header with-border">
+    <button class="btn btn-primary btnAgregarUsuario" data-toggle="modal" data-target="#modalNuevoUsuario">
+        Nuevo Usuario
+    </button>
+  </div>
+<br>
+
+  <div class="card-body">
+    <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="row-border hover table table-bordered  shadow table-hover">
+      <thead>
+        <tr>
+            <th style="width:10px">#</th>
+            <th style="width:150px">Nombres y Apellidos</th>
+            <th style="width:150px">Usuario</th>
+            <th style="width:100px">Email</th>
+            <th style="width:100px">Terminal</th>
+            <th style="width:50px">Perfil</th>
+            <th style="width:10px">Estado</th>
+            <th style="width:10px">Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of users let i=index">
+            <td>{{i+1}}</td>
+            <td>{{item.name}} {{item.lastName}} {{item.lastMotherName}}</td>
+            <td>{{item.nameUser}}</td>
+            <td>{{item.email}}</td>
+            <td>{{item.terminalPortuarioDescription}}</td>
+            <td>{{item.rolDescription}}</td>
+            <td> <button [ngClass]="{ 'btn-success': item.commonTables.state, 'btn-danger': !item.commonTables.state }"
+                class="btn btn-sm" (click)="changeUserState(item.id)">
+                {{ item.commonTables.state ? 'Activo' : 'Inactivo' }}
+                </button>
+            </td>
+            <td>
+                <div class="btn-group">
+                    <button class="btn btn-warning btn-sm btnEditarUsuario" data-toggle="modal" data-target="#modalEditarUsuario"(click)="openEditModal(item.id)" ><i class="fa fa-pen"></i></button>
+                    <button class="btn btn-danger btn-sm btnEliminarUsuario" (click)="DeleteUser(item.id)"><i class="fa fa-trash-alt"></i></button>
+                </div>
+            </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+</section>
+<!-- New User Modal -->
+
+<div id="modalNuevoUsuario" class="modal fade" role="dialog">
+<div class="modal-dialog">
+<div class="modal-content">
+
+<!-- <form > -->
+  <form (ngSubmit)="newUser(newForm.value)" [formGroup]="newForm"  autocomplete="off">
+      <!-- Modal Header -->
+      <div class="modal-header" style="background:#343a40; color: white">
+          <h4 class="modal-title">Nuevo Usuario</h4>
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+
+      <!-- Modal body -->
+      <div class="modal-body">
+          <div class="box-body">
+
+                  <!-- Entrada Portuario -->
+                  <div class="row py-1">
+                      <div class="col-12">
+                          <span class="input-group-addon form-control-i">Terminal Portuario:</span><br>
+                            <select class="form-control " style="background:white" formControlName="idTerminalPortuario">
+                                <option value="">SELECCIONE TERMINAL</option>
+                                <option *ngFor="let item of terminal" value="{{item.id}}">{{item.detalle}}</option>
+                            </select>
+                      </div>
+                  </div>
+                  <div class="row py-1">
+                      <!-- Entrada nombre -->
+                      <div class="col-4">
+                          <span class="input-group-addon">Nombres:</span>
+                          <input type="text" class="form-control input-lg" formControlName="name"  required>
+                      </div>
+                      <div class="col-4">
+                          <span class="input-group-addon">Apellidos Paterno:</span>
+                          <input type="text" class="form-control input-lg" formControlName="lastName" required>
+                      </div>
+                      <div class="col-4">
+                          <span class="input-group-addon">Apellidos Materno:</span>
+                          <input type="text" class="form-control input-lg" formControlName="lastNameMother" required>
+                      </div> 
+                  </div>
+
+                  <div class="row py-1">
+                      <div class="col-4">
+                          <span class="input-group-addon form-control-i">Departamento:</span>
+                          <select class="form-control " style="background:white" formControlName="department" required>
+                              <option value="">Seleccionar Departamento</option>
+                              <option value="lima">Lima</option>
+                          </select>
+                      </div>
+                      <!-- Entrada Provincia -->
+                      <div class="col-4">
+                          <span class="input-group-addon form-control-i">Provincia:</span>
+                          <select class="form-control " style="background:white" formControlName="province" required>
+                              <option value="">Seleccionar Provincia</option>
+                              <option value="lima">Lima</option>
+                          </select>
+                      </div>
+                      <!-- Entrada Distrito -->
+                      <div class="col-4">
+                          <span class="input-group-addon form-control-i">Distrito:</span>
+                          <select class="form-control " style="background:white" formControlName="district" required>
+                              <option value="">Seleccionar Distrito</option>
+                              <option value="lima">Lima</option>
+                          </select>
+                      </div>
+                  </div>
+
+                  <div class="row py-1">
+                      <div class="col-12">
+                          <span class="input-group-addon">Dirección:</span>
+                          <input type="text" class="form-control input-lg" formControlName="address" placeholder="Ingresar dirección" required>
+                      </div>
+                  </div>
+
+                  <div class="row py-1">
+                      <div class="col-6">
+                          <span class="input-group-addon form-control-i">Telefono:</span>
+                          <input type="text" class="form-control input-lg" formControlName="numberPhone" placeholder="Ingresar Teléfono" required>
+                          
+                      </div>
+                      <div class="col-6">
+                          <span class="input-group-addon form-control-i">Correo:</span>
+                          <input type="email" class="form-control input-lg" formControlName="email" placeholder="Ingresar Correo" required>
+                      </div>  
+                  </div>
+
+                  <div class="row py-1">
+                      <div class="col-12">
+                          <span class="input-group-addon form-control-i">Rol:</span>
+                          <select class="form-control " style="background:white" formControlName="idRol">
+                            <option value="">SELECCIONE ROL</option>
+                            <option *ngFor="let item2 of roles" value="{{item2.id}}">{{item2.description}}</option>
+                          </select>
+                      </div>
+                  </div>
+
+                  <div class="row py-1">
+                      <div class="col-6">
+                          <span class="input-group-addon form-control-i">Usuario:</span>
+                          <input type="text" class="form-control input-lg" formControlName="nameUser" placeholder="Ingresar Usuario" required>
+                          
+                      </div>
+                      <div class="col-6">
+                          <span class="input-group-addon form-control-i">password:</span>
+                          <input type="text" class="form-control input-lg" formControlName="password" placeholder="Ingresar password" required>
+                      </div>  
+                  </div>
+          </div>
+      </div>
+      <!-- Modal footer -->
+      <div class="modal-footer">
+          <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Salir</button>
+          <button type="submit" class="btn btn-primary" [disabled]="newForm.invalid">Guardar</button>
+      </div>
+  </form>
+</div>
+</div>
+</div>
+
+<!-- Edit User Modal -->
+
+<div id="modalEditarUsuario" class="modal fade" role="dialog">
+|
+<div class="modal-dialog">
+<div class="modal-content">
+
+  <form (ngSubmit)="UpdateUser(editForm.value)" [formGroup]="editForm" autocomplete="off">
+      <!-- Modal Header -->
+      <div class="modal-header" style="background:#343a40; color: white">
+          <h4 class="modal-title">Editar Usuario</h4>
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+
+      <!-- Modal body -->
+      <div class="modal-body">
+          <div class="box-body">
+
+              <!-- <div class="row py-1">
+                  <div class="col-12">
+                      <span class="input-group-addon">id:</span>
+                      <input type="hidden" class="form-control input-lg" formControlName="id" required >
+                  </div>
+              </div> -->
+
+              <!-- Entrada Portuario -->
+              <div class="row py-1">
+                  <div class="col-12">
+                      <span class="input-group-addon form-control-i">Portuario:</span><br>
+                      <select class="form-control " style="background:white" formControlName="idTerminalPortuario">
+                        <option value="">SELECCIONE TERMINAL</option>
+                        <option *ngFor="let item of terminal" value="{{item.id}}">{{item.detalle}}</option>
+                    </select>
+                  </div>
+              </div>
+              <div class="row py-1">
+                  <!-- Entrada nombre -->
+                  <div class="col-4">
+                      <span class="input-group-addon">Nombres:</span>
+                      <input type="text" class="form-control input-lg" formControlName="name"  required>
+                  </div>
+                  <div class="col-4">
+                      <span class="input-group-addon">Apellidos Paterno:</span>
+                      <input type="text" class="form-control input-lg" formControlName="lastName" required>
+                  </div>
+                  <div class="col-4">
+                      <span class="input-group-addon">Apellidos Materno:</span>
+                      <input type="text" class="form-control input-lg" formControlName="lastNameMother" required>
+                  </div> 
+              </div>
+
+              <div class="row py-1">
+                  <div class="col-4">
+                      <span class="input-group-addon form-control-i">Departamento:</span>
+                      <select class="form-control " style="background:white" formControlName="department" required>
+                          <option value="">Seleccionar Departamento</option>
+                          <option value="lima">Lima</option>
+                      </select>
+                  </div>
+                  <!-- Entrada Provincia -->
+                  <div class="col-4">
+                      <span class="input-group-addon form-control-i">Provincia:</span>
+                      <select class="form-control " style="background:white" formControlName="province" required>
+                          <option value="">Seleccionar Provincia</option>
+                          <option value="lima">Lima</option>
+                      </select>
+                  </div>
+                  <!-- Entrada Distrito -->
+                  <div class="col-4">
+                      <span class="input-group-addon form-control-i">Distrito:</span>
+                      <select class="form-control " style="background:white" formControlName="district" required>
+                          <option value="">Seleccionar Distrito</option>
+                          <option value="lima">Lima</option>
+                      </select>
+                  </div>
+              </div>
+
+              <div class="row py-1">
+                  <div class="col-12">
+                      <span class="input-group-addon">Dirección:</span>
+                      <input type="text" class="form-control input-lg" formControlName="address" placeholder="Ingresar dirección" required>
+                  </div>
+              </div>
+
+              <div class="row py-1">
+                  <div class="col-6">
+                      <span class="input-group-addon form-control-i">Telefono:</span>
+                      <input type="text" class="form-control input-lg" formControlName="numberPhone" placeholder="Ingresar Teléfono" required>
+                      
+                  </div>
+                  <div class="col-6">
+                      <span class="input-group-addon form-control-i">Correo:</span>
+                      <input type="text" class="form-control input-lg" formControlName="email" placeholder="Ingresar Correo" required>
+                  </div>  
+              </div>
+
+              <div class="row py-1">
+                  <div class="col-12">
+                      <span class="input-group-addon form-control-i">Rol:</span>
+                      <select class="form-control " style="background:white" formControlName="idRol" required>
+                        <option value="">SELECCIONE ROL</option>
+                        <option *ngFor="let item2 of roles" value="{{item2.id}}">{{item2.description}}</option>
+                      </select>
+                  </div>
+              </div>
+          </div>
+      </div>
+      <!-- Modal footer -->
+      <div class="modal-footer">
+          <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Salir</button>
+          <button type="submit" class="btn btn-primary" id="BtnUpdateUser">Guardar</button>
+      </div>
+  </form>
+</div>
+</div>
+</div>
+
+
+<div id="modalEliminarUsuario" class="modal fade" role="dialog">
+<div class="modal-dialog">
+<div class="modal-content">
+
+  <form role="form" method="post" enctype="multipart/form-data">
+      <!-- Modal Header -->
+      <div class="modal-header" style="background:#343a40; color: white">
+          <h4 class="modal-title">Editar Tipo de Contrato</h4>
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+
+      <!-- Modal body -->
+      <div class="modal-body">
+          <div class="box-body">
+              <input type="hidden" id="DeleteUserId">
+              <span>Estás Seguro que desea eliminar el Usuario </span><span id="TextUser"></span>
+          </div>
+      </div>
+      <!-- Modal footer -->
+      <div class="modal-footer">
+          <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Salir</button>
+          <button type="submit" class="btn btn-primary" id="btnDeleteUser">Eliminar</button>
+      </div>
+  </form>
+</div>
+</div>
+</div>
+
+<div id="modalCambiarContrasenia" class="modal fade" role="dialog">
+<div class="modal-dialog">
+<div class="modal-content">
+
+  <form role="form" method="post" enctype="multipart/form-data">
+      <!-- Modal Header -->
+      <div class="modal-header" style="background:#343a40; color: white">
+          <h4 class="modal-title">cambiar contraseña</h4>
+          <button type="button" class="" data-dismiss="modal">&times;</button>
+      </div>
+
+      <!-- Modal body -->
+      <div class="modal-body">
+          <div class="box-body">
+                  <div class="row py-1">
+                      <div class="col-12">
+                          <span class="input-group-addon form-control-i">password:</span>
+                          <input type="password" class="form-control input-lg" id="updatePassword" name="" placeholder="Ingresar Usuario" required>
+                      </div>
+                      <div class="col-12">
+                          <span class="input-group-addon form-control-i">password:</span>
+                          <input type="password" class="form-control input-lg" id="updatePasswordConfirm" name="" placeholder="Ingresar password" required>
+                      </div>  
+                  </div>
+          </div>
+      </div>
+      <!-- Modal footer -->
+      <div class="modal-footer">
+          <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Salir</button>
+          <button type="submit" class="btn btn-primary" id="BtnUpdatePassword" [disabled]="editForm.invalid">Actualizar</button>
+      </div>
+  </form>
+</div>
+</div>
+</div>
+
+<!-- <ul>
+    <li *ngFor="let item of users">
+      {{ item.name }}
+    </li>
+</ul> -->

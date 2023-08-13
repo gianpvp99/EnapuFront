@@ -1,0 +1,55 @@
+<div class="login-page">
+  <div class="login-box">
+    <div class="login-logo">
+    <img src="../../../assets/dist/img/logo-enapu-original.png" width="300px" height="100px" class="brand-image"> 
+    </div>
+    <!-- /.login-logo -->
+    <div class="card">
+      <div class="card-body login-card-body">
+        <p class="login-box-msg"><b>Bienvenido al Sistema</b></p>
+
+        <form (ngSubmit)="onLogin(loginForm.value)" [formGroup]="loginForm" >
+          <div class="input-group mb-3">
+            <input type="text" class="form-control" formControlName="user" placeholder="Ingresar usuario" required>
+            <div class="input-group-append">
+              <div class="input-group-text">
+                <span class="fas fa-envelope"></span>
+              </div>
+            </div>
+          </div>
+          <div class="input-group mb-3">
+            <input type="password" class="form-control" formControlName="password" placeholder="Ingresar contraseña" required>
+            <div class="input-group-append">
+              <div class="input-group-text">
+                <span class="fas fa-lock"></span>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="text-center mb-2">
+              <div class="icheck-primary">
+                <input type="checkbox" id="remember">
+                <label for="remember">
+                  Recuérdame
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <!-- /.col -->
+            <div class="col-12">
+              <button type="submit" class="btn btn-primary btn-block" [disabled]="loginForm.invalid">Ingresar</button>
+            </div>
+            <!-- /.col -->
+          </div>
+          
+        </form>
+
+      </div>
+      <!-- /.login-card-body -->
+    </div>
+  </div>
+  <!-- /.login-box -->
+</div>

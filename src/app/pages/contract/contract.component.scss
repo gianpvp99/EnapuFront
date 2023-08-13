@@ -1,0 +1,39 @@
+// div.move-right {
+//   margin-left: 760px; /* Ajusta el valor según tu preferencia */
+// }
+  
+  /* Estilo para el texto del tooltip personalizado */
+  [tooltip]:hover::after {
+    content: attr(tooltip); /* Mostrar el texto definido en el atributo title */
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: rgba(0, 0, 0, 0.8);
+    color: #fff;
+    padding: 5px;
+    border-radius: 4px;
+    font-size: 14px;
+    white-space: nowrap;
+    display: block; /* Mostrar el tooltip personalizado cuando el usuario coloca el cursor */
+  }
+  
+
+  /* Estilos para ocultar el input de tipo file predeterminado */
+.custom-file-input {
+  display: none;
+}
+
+/* Estilos para el botón personalizado */
+.custom-file-label {
+  cursor: pointer;
+  padding: 8px 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: #f9f9f9;
+}
+
+/* Estilos para cambiar la apariencia del botón cuando el usuario pasa el cursor sobre él */
+.custom-file-label:hover {
+  background-color: #f2f2f2;
+}

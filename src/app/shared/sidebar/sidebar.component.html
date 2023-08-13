@@ -1,0 +1,116 @@
+<!-- Main Sidebar Container -->
+<aside class="main-sidebar sidebar-dark-primary elevation-4">
+    <!-- Brand Logo -->
+    <a href="dashboard" class="brand-link">
+            <img src="assets/dist/img/logo-enapu-white.png" alt="" class="brand-image"> 
+        <span class="brand-text font-weight-light"><img src="assets/dist/img/logo-enapu-white2.png" width="150px" height="37px" ></span>
+    </a>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+
+        <!-- Sidebar Menu -->
+        <nav class="mt-2">
+            <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="dashboard" data-accordion="false">
+                <!-- Add icons to the links using the .nav-icon class
+                with font-awesome or any other icon font library -->
+
+                <li class="nav-item" *ngFor="let item of menuItems">
+                    <a [routerLink]="subDashboard.url" class="nav-link" *ngFor="let subDashboard of item.subdashboard" >
+                        <i class="{{subDashboard.icono}}"></i>
+                        <p class="ml-2">
+                            {{subDashboard.dashboard}}
+                        </p>
+                    </a>
+                </li>
+
+                <li class="nav-item" *ngFor="let item of menuItems">
+                    <a href="#" class="nav-link">
+                        <i class="{{item.icono}}"></i> <!-- Icono-->
+                        <p class="ml-2">
+                            {{item.catalogo}} <!--Titulo-->
+                            <span class="badge badge-warning ml-2">{{item.submenu.lenght}}</span>
+                            <i class="fas fa-angle-left right"></i>
+                        </p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item" *ngFor="let subMenu of item.submenu">
+                            <a [routerLink]="subMenu.url" class="nav-link" style="cursor: pointer;" >
+                            <i class="{{subMenu.icono}}"></i>
+                                <p class="ml-2">{{subMenu.catalogo}}</p> 
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+
+                <li class="nav-item" *ngFor="let item of menuItems">
+                    <a href="#" class="nav-link">
+                        <i class="{{item.icono2}}"></i>
+                        <p class="ml-2">
+                            {{item.gestion}}
+                            <span class="badge badge-warning ml-2">{{item.submenu2.lenght}}</span>
+                            <i class="fas fa-angle-left right"></i>
+                        </p>
+                    </a>
+                    <ul class="nav nav-treeview nav-child-indent">
+                        <li class="nav-item" *ngFor="let subMenu2 of item.submenu2">
+                            <a [routerLink]="subMenu2.url"  class="nav-link" >
+                                <i class="{{subMenu2.icono}}"></i>
+                                <p class="ml-2">{{subMenu2.gestion}}</p>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+
+                <li class="nav-item" *ngFor="let item of menuItems">
+                    <a href="#" class="nav-link">
+                        <i class="{{item.icono3}}"></i>
+                        <p class="ml-2">
+                            {{item.reportes}}
+                            <span class="badge badge-warning ml-2">{{item.submenu3.lenght}}</span>
+                            <i class="fas fa-angle-left right"></i>
+                        </p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item"  *ngFor="let subMenu3 of item.submenu3">
+                            <a [routerLink]="subMenu3.url"  class="nav-link">
+                                <i class="{{subMenu3.icono}}"></i>
+                                <p class="ml-2">{{subMenu3.reportes}}</p>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+
+                <li class="nav-item" *ngFor="let item of menuItems">
+                    <a href="#" class="nav-link">
+                        <i class="{{item.icono4}}"></i>
+                        <p class="ml-2">
+                            {{item.seguridad}}
+                            <span class="badge badge-warning ml-2">{{item.submenu4.lenght}}</span>
+                            <i class="fas fa-angle-left right"></i>
+                        </p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item" *ngFor="let subMenu4 of item.submenu4">
+                            <a [routerLink]="subMenu4.url"  class="nav-link" >
+                                <i class="{{subMenu4.icono}}"></i>
+                                <p class="ml-2">{{subMenu4.seguridad}}</p>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" (click)="logout()" style="cursor: pointer;">
+                        <i class="nav-icon fas fa-sign-out-alt"></i>
+                        <p class="ml-2">
+                            Salir
+                        </p>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+        <!-- /.sidebar-menu -->
+    </div>
+    <!-- /.sidebar -->
+</aside>

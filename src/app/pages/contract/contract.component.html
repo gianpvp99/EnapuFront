@@ -1,0 +1,1064 @@
+<!-- Content Header (Page header) -->
+<div class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1 class="m-0">Contrato <i class="nav-icon fas fa-copy"></i></h1>
+            </div><!-- /.col -->
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                    <li class="breadcrumb-item"><a href="dashboard">Inicio</a></li>
+                    <li class="breadcrumb-item active">Contrato</li>
+                </ol>
+            </div><!-- /.col -->
+        </div><!-- /.row -->
+    </div><!-- /.container-fluid -->
+</div>
+<!-- /.content-header -->
+
+<!-- Main content -->
+<section class="content">
+    <div class="card">
+        <div class="card-header with-border">
+            <button class="btn btn-primary " data-toggle="modal" data-target="#modalNuevoContrato" (click)="cleanContract()">
+                Nuevo Contrato
+            </button>
+        </div><br>
+
+        <div class="card-body">
+            <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="row-border hover table table-bordered  shadow table-hover">
+                <thead >
+                    <tr>
+                        <th style="width:5px">#</th>
+                        <th style="width:100px">Cliente</th>
+                        <th style="width:100px">Descripción</th>
+                        <th style="width:50px">Fecha Contrato</th>
+                        <th style="width:50px">Fecha Inicio</th>
+                        <th style="width:50px">Fecha Fin</th>
+                        <th style="width:50px" class="text-center">Estado</th>
+                        <th style="width:10px" class="text-center">Acciones</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <tr *ngFor="let item of contracts; let i=index">
+                        <td>{{i+1}}</td>
+                        <td>{{item.cliente}}</td>
+                        <td>{{item.descriptionShort }}</td>
+                        <td>{{item.dateContract }}</td>
+                        <td>{{item.dateStart}}</td>
+                        <td>{{item.dateEnd}}</td>
+                        <td class="text-center">
+                            <button [ngClass]="{ 'btn-success': item.commonTables.state, 'btn-danger': !item.commonTables.state }"
+                                class="btn btn-sm" (click)="UpdateState(item.id)">
+                                {{ item.commonTables.state ? 'Activo' : 'Inactivo' }}
+                            </button>
+                        </td>
+                        <td class="text-center">
+                            <div class="btn-group">
+                                <!-- <button tooltip="Editar Contrato"  class="btn btn-warning btn-sm " data-toggle="modal" data-target="#modalEditContract" (click)="editContract(item.id)" ><i class="fa fa-pen"></i></button> -->
+                                <button tooltip="Periodo Meta" class="btn bg-black btn-sm btnUpdateGoalPeriod" data-toggle="modal" data-target="#modalUpdateGoalPeriod" (click)="listDetailContract(item.id)"><i class="fa fa-calendar-alt"></i></button>
+                                <button tooltip="Responsable de Notificación" class="btn bg-gray btn-sm btn btnUpdateNotifyingResponsible" data-toggle="modal" data-target="#modalUpdateNotifyingResponsible" (click)="listResponsible(item.id)"><i class="fa fa-users"></i></button>
+                                <!-- <button class="btn bg-lightblue btn-sm btnReassignResponsible" data-toggle="modal" data-target="#modalReassignResponsible"><i class="fa fa-user-tag"></i></button> -->
+                                <button tooltip="Eliminar Contrato" class="btn btn-danger btn-sm btnDeleteContract" (click)="DeleteContract(item.id)"><i class="fa fa-trash-alt"></i></button>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+</section>
+
+<!-- New Type Contact Modal -->
+<div id="modalNuevoContrato" class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+
+                <!-- Modal Header -->
+                <div class="modal-header" style="background:#343a40; color: white">
+                    <h4 class="modal-title">Nuevo Contrato</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+
+                <!-- Modal body -->
+            <div class="modal-body">
+               
+                <div class="row">
+                    <div class="col-12 col-sm-6">
+                        <div class="form-group">
+                            <label>Terminal Portuario:</label>
+                            <input type="text"  class="form-control input-lg" [value]="this.getUserNameFromlocalStorage().terminalPortuarioDescription"  readonly>
+                        </div>
+                        <!-- /.form-group -->
+                    </div>
+                    <!-- /.col -->
+                    <div class="col-12 col-sm-6">
+                        <div class="form-group">
+                            <label>Descripción Larga (Sumilla):</label>
+                            <div class="select2-purple">
+                                <input type="text" class="form-control input-lg" [(ngModel)]="addContract.descriptionLong" placeholder="Ingresar descripción larga" required>
+                            </div>
+                        </div>
+                        <!-- /.form-group -->
+                    </div>
+                    <!-- /.col -->
+                </div>
+
+                <div class="row">
+                    <div class="col-12 col-sm-6">
+                        <div class="form-group">
+                            <label>Descripción Corta:</label>
+                            <input type="text" class="form-control input-lg" [(ngModel)]="addContract.descriptionShort" placeholder="Ingresar descripción corta" required>
+                        </div>
+                        <!-- /.form-group -->
+                    </div>
+                    <!-- /.col -->
+                    <div class="col-12 col-sm-6">
+                        <div class="form-group">
+                                <label>Cliente</label>
+                                <select class="form-control select2bs4" style="background:white" [(ngModel)]="addContract.idClient" required>
+                                    <!-- <option value="">SELECCIONE CLIENTE</option> -->
+                                    <option *ngFor="let item of cliente" value="{{item.id}}">{{item.name}}</option>
+                                </select>
+                        </div>
+                        
+                        <!-- /.form-group -->
+                    </div>
+                    <!-- /.col -->
+                </div>
+
+                <div class="row">
+                    <div class="col-3 col-sm-3">
+                        <div class="form-group">
+                            <label>Tipo de contrato:</label>
+                            <select class="form-control " style="background:white" [(ngModel)]="addContract.idTypeContract" required>
+                                <!-- <option value="">SELECCIONE TIPO DE CONTRATO</option> -->
+                                <option *ngFor="let item of typeContract" value="{{item.id}}">{{item.typeContract}}</option>
+                            </select>
+                        </div>
+                        <!-- /.form-group -->
+                    </div>
+                    <!-- /.col -->
+
+                    <div class="col-3 col-sm-3">
+                        <div class="form-group">
+                            <label>Fecha Contrato:</label>
+                            <div class="input-group date" data-target-input="nearest">
+                                <input type="date" [(ngModel)]="addContract.dateContract" class="form-control"  >
+                            </div>
+                        </div>
+                        <!-- /.form-group -->
+                    </div>
+                    <!-- /.col -->
+
+                    <!-- /.col -->
+                    <div class="col-3 col-sm-3">
+                        <div class="form-group">
+                            <label>Fecha Inicio:</label>
+                            
+                            <div class="input-group date" data-target-input="nearest">
+                                <input type="date" [(ngModel)]="addContract.dateStart" class="form-control" >
+                            </div>
+                        </div>
+                        <!-- /.form-group -->
+                    </div>
+                    <!-- /.col -->
+
+                    <!-- /.col -->
+                    <div class="col-3 col-sm-3">
+                        <div class="form-group">
+                            <label>Fecha término:</label>
+                            
+                            <div class="input-group date" data-target-input="nearest">
+                                <input type="date" [(ngModel)]="addContract.dateEnd" class="form-control" >
+                            </div>
+                        </div>
+                        <!-- /.form-group -->
+                    </div>
+                    <!-- /.col -->
+                </div>
+
+                <div class="row">
+                    <div class="col-12">
+                        <div class="form-group">
+                            <label>Contrato (PDF):</label>
+                            
+                            <div class="form-group">
+                                <input type="file" accept=".pdf" (change)="onFileSelected($event)"
+                                [(ngModel)]="addContract.directionContract" title="Seleccionar archivo PDF" 
+                                class="custom-file-input" id="customFileInput" #fileInput>
+                                <label class="custom-file-label" for="customFileInput">{{fileName}}</label>
+                            </div>
+
+                        </div>
+                        
+                    </div>
+                </div>            
+                <div class="row">
+                    <!-- <div class="col-12 col-sm-6">
+                        <div class="form-group">
+                            <label>Tipo de servicio:</label>
+                            <select class="form-control " style="background:white" formControlName="" required>
+                                <option value="">SELECCIONE TIPO SERVICIO</option>
+                                <option value="">foreach</option>
+                            </select>
+                        </div>
+                    </div> -->
+
+                    <div class="col-12 col-sm-6">
+                        <div class="form-group">
+                            <label>Tipo de Tarifa:</label>
+                            <select class="form-control select2bs4" style="background:white;"
+                                [(ngModel)]="selectedTypeTarifa" (ngModelChange)="onTypeTarifaChange()" required>
+                                <!-- <option value="">SELECCIONE TARIFA</option> -->
+                                <option *ngFor="let item of typeTarifa" [ngValue]="item.idTipoTarifa">{{item.descripcion}}</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="col-12 col-sm-6">
+                        <div class="form-group">
+                            <label>Tarifa Asociada:</label>
+                            <select class="form-control select2bs4" style="background:white;" 
+                                 [(ngModel)]="newFormDetailContract.idTarifa" required readonly>
+                                <!-- <option value="">SELECCIONE TARIFA</option> -->
+                                <option *ngFor="let item of tarifa" [ngValue]="item.id">{{item.description}}</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-3 col-sm-3">
+                        <div class="form-group">
+                            <label>Periodo:</label>
+                                <select class="form-control " style="background:white"[(ngModel)]="newFormDetailContract.idPeriod" required>
+                                    <option value="">Seleccionar Periodo</option>
+                                    <option *ngFor="let item of periodo" value="{{item.id}}">{{item.description}}</option>
+                                </select>
+                        </div>
+                        <!-- /.form-group -->
+                    </div>
+                    <!-- /.col -->
+                    <div class="col-3 col-sm-3">
+                        <div class="form-group">
+                            <label>Unidad:</label>
+                                <select class="form-control " style="background:white" [(ngModel)]="selectedUnit" (ngModelChange)="onUnitChange()" required >
+                                    <option value="">Seleccionar Unidad</option>
+                                    <option *ngFor="let item of unit" [ngValue]="item.id">{{item.description}}</option>
+                                </select>
+                        </div>
+                        <!-- /.form-group -->
+                    </div>
+                    <!-- /.col -->
+
+                    <!-- /.col -->
+                    <div class="col-3 col-sm-3">
+                        <div class="form-group">
+                            <label>Unidad Medida:</label>
+                                <select class="form-control " style="background:white" 
+                                     [(ngModel)]="newFormDetailContract.idUnitMeasurement" required readonly >
+                                    <option value="">Seleccionar Unidad Medida</option>
+                                    <option *ngFor="let item of unitMeasure" [ngValue]="item.id">{{item.description}}</option>
+                                </select>
+                        </div>
+                        <!-- /.form-group -->
+                    </div>
+                    <!-- /.col -->
+
+                    <!-- /.col -->
+                    <div class="col-3 col-sm-3">
+                        <div class="form-group">
+                        <label>Periodo Meta:</label>
+                            <div class="input-group ">
+                                <input type="number" class="form-control input-lg" id="txtPeriodoMeta" [min]="0"
+                                  [(ngModel)]="newFormDetailContract.periodoMeta" (ngModelChange)="checkNegativeContract()" required>
+                                <span class="input-group-append">
+                                    <button type="submit" class="btn btn-info btn-flat" id="btnAddDetail" tooltip="Agregar Detalle Contrato"
+                                    [disabled]="!(selectedTypeTarifa && newFormDetailContract.idTarifa  && newFormDetailContract.idPeriod &&
+                                                selectedUnit && newFormDetailContract.idUnitMeasurement && 
+                                                newFormDetailContract.periodoMeta)"  (click)="addDetailContract()">+</button>
+                                    <!-- <button type="button" class="btn btn-info btn-flat" id="btnAddDetail" (click)="addDetailContract()">+</button> -->
+                                </span>
+                            </div>
+                        </div>
+                        <!-- /.form-group -->
+                    </div>
+                    <!-- /.col -->
+                </div>
+                <!-- </form> -->
+                <div class="row">
+                    <div class="form-group "> 
+                    <table class="table table-bordered  shadow table-hover dt-responsive " id="tbDetails">
+                                <thead>
+                                    <tr>
+                                        <th style="width:300px;">Tarifa</th>
+                                        <th style="width:200px;">Periodo</th>
+                                        <th style="width:200px;">Unidad Medida</th>
+                                        <th style="width:200px;">Periodo Meta</th>
+                                        <th style="width:50px;">Acción</th>
+                                    </tr>
+                                </thead>
+
+                            <tbody>
+                                <tr *ngFor="let item of detailText;let i=index">
+                                    <td>{{item.tarifa}}</td>
+                                    <td>{{item.Period}}</td>
+                                    <td>{{item.unitMeasurement}}</td>
+                                    <td>{{item.periodoMeta}}</td>
+                                    <td>
+                                        <div class="btn-group">
+                                            <button class="btn btn-danger btn-sm btnDeleteContract"
+                                             tooltip="Eliminar"
+                                             (click)="deleteDetailContract(i)">
+                                             <i class="fa fa-trash-alt"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <!-- <tr>
+                                    <td>Tarifa 003</td>
+                                    <td>MENSUAL</td>
+                                    <td>TONELADAS</td>
+                                    <td>15.50</td>
+                                    <td class="text-center">
+                                        <div class="btn-group " >
+                                            <button class="btn btn-danger btn-xs btnDeleteResponsable "><i class="fa fa-times"></i></button>
+                                        </div>
+                                    </td>
+                                </tr> -->
+
+                            </tbody>
+                        </table> 
+                    </div>
+                    <!-- /.form-group -->
+                </div>
+            
+                <div class="row">
+                    <div class="col-12 col-sm-6">
+                        <div class="form-group">
+                            <label>Responsable:</label>
+                            <div class="input-group ">
+                                <select  class="form-control " style="background:white" [(ngModel)]="newFormResponsibleContract.idUser" required>
+                                    
+                                    <option value="">Seleccionar Responsable</option>
+                                    <option *ngFor="let item of user" value="{{item.id}}">{{item.name}} {{item.lastName}} {{item.lastMotherName}}</option>
+                                </select>
+                                <span class="input-group-append">
+                                    <button type="button" class="btn btn-info btn-flat" id="btnAddResponsible"
+                                    [disabled]="!(newFormResponsibleContract.idUser)" tooltip="Agregar Responsable"
+                                    (click)="addResponsibleContract()">+</button>
+                                </span>
+                            </div>
+                        </div>
+                        <!-- /.form-group -->
+                    </div>
+                    <!-- /.col -->
+                </div>
+
+                <div class="row">
+                    <div class="form-group ">
+                        <table class="table table-bordered  shadow table-hover dt-responsive "   id="tbResponsibles">
+                            <thead>
+                                <tr>
+                                    <th width="300">Responsable</th>
+                                    <th width="300">Email</th>
+                                    <th width="300">Acción</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                <tr *ngFor="let item of responsibleText;let i=index">
+                                    <td>{{item.responsible}}</td>
+                                    <td>{{item.email}}</td>
+                                    <td>
+                                        <div class="btn-group">
+                                            <button class="btn btn-danger btn-sm btnDeleteContract"
+                                             tooltip="Eliminar"
+                                             (click)="deleteResponsibleText(i)">
+                                             <i class="fa fa-trash-alt"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <!-- <tr>
+                                    <td>Gian Piero Vasquez Puente</td>
+                                    <td>gianpvp99@gmail.com</td>
+                                    <td class="text-center">
+                                        <div class="btn-group " >
+                                            <button class="btn btn-danger btn-xs btnDeleteResponsable "><i class="fa fa-times"></i></button>
+                                        </div>
+                                    </td>
+                                </tr> -->
+
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- /.form-group -->
+                </div>
+                <!-- Modal footer -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Salir</button>
+                    <button type="button" name="" class="btn btn-primary" 
+                    [disabled]="!(addContract.descriptionLong && addContract.descriptionShort && 
+                    addContract.idClient && addContract.idTypeContract && addContract.dateContract && addContract.dateStart &&
+                    addContract.dateEnd && addContract.directionContract )"
+                    (click)="newContract()">Guardar</button>
+                </div>
+            </div>
+            <!-- </form> -->
+        </div>
+    </div>
+</div>
+
+<!-- Edit Type Contact Modal -->
+<div id="modalEditContract" class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+
+                <!-- Modal Header -->
+                <div class="modal-header" style="background:#FFC107; color: white">
+                    <h4 class="modal-title">Editar Contrato</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+
+                <!-- Modal body -->
+            <div class="modal-body">
+               
+                <div class="row">
+                    <div class="col-12 col-sm-6">
+                        <div class="form-group">
+                            <label>Terminal Portuario:</label>
+                            <input type="text"  class="form-control input-lg" [value]="this.getUserNameFromlocalStorage().terminalPortuarioDescription"  readonly>
+                        </div>
+                        <!-- /.form-group -->
+                    </div>
+                    <!-- /.col -->
+                    <div class="col-12 col-sm-6">
+                        <div class="form-group">
+                            <label>Descripción Larga (Sumilla):</label>
+                            <div class="select2-purple">
+                                <input type="text" class="form-control input-lg" [(ngModel)]="addContract.descriptionLong" placeholder="Ingresar descripción larga" required>
+                            </div>
+                        </div>
+                        <!-- /.form-group -->
+                    </div>
+                    <!-- /.col -->
+                </div>
+
+                <div class="row">
+                    <div class="col-12 col-sm-6">
+                        <div class="form-group">
+                            <label>Descripción Corta:</label>
+                            <input type="text" class="form-control input-lg" [(ngModel)]="addContract.descriptionShort" placeholder="Ingresar descripción corta" required>
+                        </div>
+                        <!-- /.form-group -->
+                    </div>
+                    <!-- /.col -->
+                    <div class="col-12 col-sm-6">
+                        <div class="form-group">
+                                <label>Cliente</label>
+                                <select class="form-control select2bs4" style="background:white" [(ngModel)]="addContract.idClient" required>
+                                    <!-- <option value="">SELECCIONE CLIENTE</option> -->
+                                    <option *ngFor="let item of cliente" value="{{item.id}}">{{item.name}}</option>
+                                </select>
+                        </div>
+                        
+                        <!-- /.form-group -->
+                    </div>
+                    <!-- /.col -->
+                </div>
+
+                <div class="row">
+                    <div class="col-3 col-sm-3">
+                        <div class="form-group">
+                            <label>Tipo de contrato:</label>
+                            <select class="form-control " style="background:white" [(ngModel)]="addContract.idTypeContract" required>
+                                <option *ngFor="let item of typeContract" value=""></option>
+                            </select>
+                        </div>
+                    </div>
+                    <!-- /.col -->
+
+                    <div class="col-3 col-sm-3">
+                        <div class="form-group">
+                            <label>Cambiar detalle contrato:</label>
+                            <div class="custom-control custom-radio">
+                                <input class="custom-control-input" type="radio" id="customRadio1" name="customRadio">
+                                <label for="customRadio1" class="custom-control-label">Custom Radio</label>
+                              </div>
+                        </div>
+                        <!-- /.form-group -->
+                    </div>
+
+                    <div class="col-3 col-sm-3">
+                        <div class="form-group">
+                            <label>Fecha Contrato:</label>
+                            <div class="input-group date" data-target-input="nearest">
+                                <input type="date"  [(ngModel)]="addContract.dateContract" class="form-control"  >
+                            </div>
+                        </div>
+                        <!-- /.form-group -->
+                    </div>
+                    <!-- /.col -->
+
+                    <!-- /.col -->
+                    <div class="col-3 col-sm-3">
+                        <div class="form-group">
+                            <label>Fecha Inicio:</label>
+                            
+                            <div class="input-group date" data-target-input="nearest">
+                                <input type="date" [(ngModel)]="addContract.dateStart" class="form-control" >
+                            </div>
+                        </div>
+                        <!-- /.form-group -->
+                    </div>
+                    <!-- /.col -->
+
+                    <!-- /.col -->
+                    <div class="col-3 col-sm-3">
+                        <div class="form-group">
+                            <label>Fecha término:</label>
+                            
+                            <div class="input-group date" data-target-input="nearest">
+                                <input type="date" [(ngModel)]="addContract.dateEnd" class="form-control" >
+                            </div>
+                        </div>
+                        <!-- /.form-group -->
+                    </div>
+                    <!-- /.col -->
+                </div>
+
+                <div class="row">
+                    <div class="col-12">
+                        <div class="form-group">
+                        <label>Contrato (PDF):</label>
+                            <div class="custom-file">
+                            <input type="file" class="custom-file-input"  [(ngModel)]="addContract.directionContract" >
+                            <label class="custom-file-label" for="customFile">Subir Archivo</label>
+                            </div>
+                        </div>
+                        
+                    </div>
+                </div>
+            <!-- <form (ngSubmit)="addDetailContract(newFormDetailContract.value)" [formGroup]="newFormDetailContract" autocomplete="off"> -->
+            
+                <div class="row">
+                    <!-- <div class="col-12 col-sm-6">
+                        <div class="form-group">
+                            <label>Tipo de servicio:</label>
+                            <select class="form-control " style="background:white" formControlName="" required>
+                                <option value="">SELECCIONE TIPO SERVICIO</option>
+                                <option value="">foreach</option>
+                            </select>
+                        </div>
+                    </div> -->
+
+                    <div class="col-12 col-sm-6">
+                        <div class="form-group">
+                            <label>Tarifa Asociada:</label>
+                            <select class="form-control select2bs4" style="background:white;" 
+                                 [(ngModel)]="newFormDetailContract.idTarifa" required>
+                                <!-- <option value="">SELECCIONE TARIFA</option> -->
+                                <option *ngFor="let item of tarifa" value="{{item.id}}">{{item.description}}</option>
+                                <!-- <option>Alabama</option>
+                                <option>Alaska</option>
+                                <option>California</option>
+                                <option>Delaware</option>
+                                <option>Tennessee</option>
+                                <option>Texas</option>
+                                <option>Washington</option> -->
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-3 col-sm-3">
+                        <div class="form-group">
+                            <label>Periodo:</label>
+                                <select class="form-control " style="background:white"[(ngModel)]="newFormDetailContract.idPeriod" required>
+                                    <option value="-1">Seleccionar Periodo</option>
+                                    <option *ngFor="let item of periodo" value="{{item.id}}">{{item.description}}</option>
+                                </select>
+                        </div>
+                        <!-- /.form-group -->
+                    </div>
+                    <!-- /.col -->
+                    <div class="col-3 col-sm-3">
+                        <div class="form-group">
+                            <label>Unidad:</label>
+                                <select class="form-control " style="background:white" [(ngModel)]="selectedUnit" (ngModelChange)="onUnitChange()" required >
+                                    <option value="">Seleccionar Unidad</option>
+                                    <option *ngFor="let item of unit" [ngValue]="item.id">{{item.description}}</option>
+                                </select>
+                        </div>
+                        <!-- /.form-group -->
+                    </div>
+                    <!-- /.col -->
+
+                    <!-- /.col -->
+                    <div class="col-3 col-sm-3">
+                        <div class="form-group">
+                            <label>Unidad Medida:</label>
+                                <select class="form-control " style="background:white" 
+                                     [(ngModel)]="newFormDetailContract.idUnitMeasurement" required readonly >
+                                    <option value="">Seleccionar Unidad Medida</option>
+                                    <option *ngFor="let item of unitMeasure" [ngValue]="item.id">{{item.description}}</option>
+                                </select>
+                        </div>
+                        <!-- /.form-group -->
+                    </div>
+                    <!-- /.col -->
+
+                    <!-- /.col -->
+                    <div class="col-3 col-sm-3">
+                        <div class="form-group">
+                        <label>Periodo Meta:</label>
+                            <div class="input-group ">
+                                <input type="number" class="form-control input-lg" id="txtPeriodoMeta" [(ngModel)]="newFormDetailContract.periodoMeta"  required>
+                                <span class="input-group-append">
+                                    <button type="submit" class="btn btn-info btn-flat" id="btnAddDetail"
+                                    [disabled]="!(newFormDetailContract.idTarifa  && newFormDetailContract.idPeriod &&
+                                                selectedUnit && newFormDetailContract.idUnitMeasurement && 
+                                                newFormDetailContract.periodoMeta)" (click)="addDetailContract()">+</button>
+                                    <!-- <button type="button" class="btn btn-info btn-flat" id="btnAddDetail" (click)="addDetailContract()">+</button> -->
+                                </span>
+                            </div>
+                        </div>
+                        <!-- /.form-group -->
+                    </div>
+                    <!-- /.col -->
+                </div>
+                <!-- </form> -->
+                <div class="row">
+                    <div class="form-group "> 
+                    <table class="table table-bordered  shadow table-hover dt-responsive " id="tbDetails">
+                                <thead>
+                                    <tr>
+                                        <th style="width:300px;">Tarifa</th>
+                                        <th style="width:200px;">Periodo</th>
+                                        <th style="width:200px;">Unidad Medida</th>
+                                        <th style="width:200px;">Periodo Meta</th>
+                                        <th style="width:50px;">Acción</th>
+                                    </tr>
+                                </thead>
+
+                            <tbody>
+                                <tr *ngFor="let item of detailText;let i=index">
+                                    <td>{{item.tarifa}}</td>
+                                    <td>{{item.Period}}</td>
+                                    <td>{{item.unitMeasurement}}</td>
+                                    <td>{{item.periodoMeta}}</td>
+                                    <td>
+                                        <div class="btn-group">
+                                            <button class="btn btn-danger btn-sm btnDeleteContract" (click)="deleteDetailContract(i)"><i class="fa fa-trash-alt"></i></button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <!-- <tr>
+                                    <td>Tarifa 003</td>
+                                    <td>MENSUAL</td>
+                                    <td>TONELADAS</td>
+                                    <td>15.50</td>
+                                    <td class="text-center">
+                                        <div class="btn-group " >
+                                            <button class="btn btn-danger btn-xs btnDeleteResponsable "><i class="fa fa-times"></i></button>
+                                        </div>
+                                    </td>
+                                </tr> -->
+
+                            </tbody>
+                        </table> 
+                    </div>
+                    <!-- /.form-group -->
+                </div>
+            
+                <div class="row">
+                    <div class="col-12 col-sm-6">
+                        <div class="form-group">
+                            <label>Responsable:</label>
+                            <div class="input-group ">
+                                <select  class="form-control " style="background:white" [(ngModel)]="newFormResponsibleContract.idUser" required>
+                                    
+                                    <option value="">Seleccionar Responsable</option>
+                                    <option *ngFor="let item of user" value="{{item.id}}">{{item.name}} {{item.lastName}} {{item.lastMotherName}}</option>
+                                </select>
+                                <span class="input-group-append">
+                                    <button type="button" class="btn btn-info btn-flat" id="btnAddResponsible"
+                                    [disabled]="!(newFormResponsibleContract.idUser)" 
+                                    (click)="addResponsibleContract()">+</button>
+                                </span>
+                            </div>
+                        </div>
+                        <!-- /.form-group -->
+                    </div>
+                    <!-- /.col -->
+                </div>
+
+                <div class="row">
+                    <div class="form-group ">
+                        <table class="table table-bordered  shadow table-hover dt-responsive "   id="tbResponsibles">
+                            <thead>
+                                <tr>
+                                    <th width="300">Responsable</th>
+                                    <th width="300">Email</th>
+                                    <th width="300">Acción</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                <tr *ngFor="let item of responsibleText;let i=index">
+                                    <td>{{item.responsible}}</td>
+                                    <td>{{item.email}}</td>
+                                    <td>
+                                        <div class="btn-group">
+                                            <button class="btn btn-danger btn-sm btnDeleteContract" (click)="deleteResponsibleText(i)"><i class="fa fa-trash-alt"></i></button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <!-- <tr>
+                                    <td>Gian Piero Vasquez Puente</td>
+                                    <td>gianpvp99@gmail.com</td>
+                                    <td class="text-center">
+                                        <div class="btn-group " >
+                                            <button class="btn btn-danger btn-xs btnDeleteResponsable "><i class="fa fa-times"></i></button>
+                                        </div>
+                                    </td>
+                                </tr> -->
+
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- /.form-group -->
+                </div>
+                <!-- Modal footer -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Salir</button>
+                    <button type="button" name="" class="btn btn-primary" 
+                    [disabled]="!(addContract.descriptionLong && addContract.descriptionShort && 
+                    addContract.idClient && addContract.idTypeContract && addContract.dateContract && addContract.dateStart &&
+                    addContract.dateEnd && addContract.directionContract )"
+                    (click)="newContract()">Guardar</button>
+                </div>
+            </div>
+            <!-- </form> -->
+        </div>
+    </div>
+</div>
+
+<!-- Update Goal Period Modal -->
+<div id="modalUpdateGoalPeriod" 
+    class="modal fade bd-example-modal-xl" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+
+            <form >
+                <!-- Modal Header -->
+                <div class="modal-header" style="background:#343a40; color: white">
+                    <h4 class="modal-title">Periodo Meta / Avanzado</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+
+                <!-- Modal body -->
+                <div class="modal-body">
+                    <div class="modal-body">
+                        <div class="card-body">
+                            <div class="form-group">
+                                <table class="table table-bordered  shadow table-hover dt-responsive " id="">
+                                    <thead>
+                                        <tr>
+                                            <th style="width:400px;">Desc. Tarifa</th>
+                                            <th style="width:100px;">Periodo</th>
+                                            <th style="width:200px;">Fecha Inicio</th>
+                                            <th style="width:200px;">Fecha Fin</th>
+                                            <th style="width:200px;">Meta</th>
+                                            <th style="width:100px;">Acciones</th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+                                        <tr *ngFor="let item of DetailContract; let i=index">
+                                            <td>{{item.tarifaDescription}}</td>
+                                            <td>{{item.periodDescription}}</td>
+                                            <td>{{item.dateStart}}</td>
+                                            <td>{{item.dateEnd}}</td>
+                                            <td>{{item.periodoMeta}}</td>
+                                            <td class="text-center">
+                                                <div class="btn-group">
+                                                    <button tooltip="Programación"  class="btn bg-black btn-sm "
+                                                    (click)="openProgrammingModal(item.id)"
+                                                    data-toggle="modal" data-target="#modalProgramming" >
+                                                    <i class="fa fa-eye"></i></button>
+                                                    <button tooltip="Eliminar Tarifa" 
+                                                    class="btn btn-danger btn-sm" 
+                                                    (click)="DeleteDetailPeriodMeta(item.id)">
+                                                    <i class="fa fa-trash-alt"></i></button>
+                                                </div>
+                                            </td>
+                                        </tr>
+
+                                    </tbody>
+                                </table>  
+                            </div>
+                            <!-- /.form-group -->
+                        </div>
+                        <!-- /.col -->
+                    </div>
+
+                    <!-- Modal footer -->
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Salir</button>
+                        <!-- <button type="submit" name="submit" class="btn btn-primary" id="submit-button">Guardar</button> -->
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Programming Modal -->
+<div id="modalProgramming" 
+    class="modal fade bd-example-modal-xl" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl" >
+        <div class="modal-content" >
+
+            <form >
+                <!-- Modal Header -->
+                <div class="modal-header" style="background:#343a40; color: white">
+                    <h4 class="modal-title">Controlar Programación</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+
+                <!-- Modal body -->
+                <div class="modal-body">
+                    <div class="modal-body">
+                        <div class="card-body">
+
+                            <div class="row">
+                                <div class="form-group"  >
+                                    <table class="table table-striped table-dark">
+                                        <thead>
+                                            <tr>
+                                                <th>Descripción Tarifa</th>
+                                                <th>Periodo</th>
+                                                <th>Fecha Inicio</th>
+                                                <th>Fecha Fin</th>
+                                                <th>Meta</th>
+                                                <th>Pendiente</th>
+                                            </tr>
+                                        </thead>
+
+                                        <tbody>
+                                            <tr>
+                                                <td>{{periodPrograming?.tarifaDescription}}</td>
+                                                <td>{{periodPrograming?.periodDescription}}</td>
+                                                <td>{{periodPrograming?.dateStart}}</td>
+                                                <td>{{periodPrograming?.dateEnd}}</td>
+                                                <td class="text-center">{{periodPrograming?.periodoMeta}}</td>
+                                                <td class="text-center">{{periodPrograming?.periodoMeta - totalCantOfMeta}}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <table class="table table-bordered  shadow table-hover dt-responsive " >
+                                    <thead>
+                                        <tr>
+                                            <th style="width:100px;">#</th>
+                                            <th style="width:100px;">Meses</th> 
+                                            <th style="width:100px;">Tarifa</th> 
+                                            <th style="width:200px;">Fecha Inicio</th>
+                                            <th style="width:200px;">Fecha Fin</th>
+                                            <th style="width:200px;">Cantidad Meta</th>
+                                            <th class="text-center" style="width:200px;">Acción</th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+                                        <tr *ngFor="let item of Programming; let i=index">
+                                            <td>{{i+1}}</td>
+                                            <td>{{item.month}}</td>
+                                            <td>{{item.amounth}}</td>
+                                            <td>{{item.dateStart}}</td>
+                                            <td>{{item.dateEnd}}</td>
+                                            <td class="text-center">
+                                                <span *ngIf="!item.action">{{item.cantOfMeta}}</span>
+                                                <span *ngIf="item.action">
+                                                    <input type="number" [(ngModel)]="cantOfMeta" (ngModelChange)="checkNegativePrograming()"
+                                                    [min]="0" class="form-control col-12" placeholder="Ingresar meta" name="cantOfMeta">
+                                                </span>
+                                            </td>
+                                            <td class="text-center">
+                                                <div *ngIf="!item.action" class="btn-group" >
+                                                    <button (click)="editCantMeta(item)" tooltip="Editar Cantidad Meta"
+                                                    class="btn btn-warning btn-sm"><i class="fa fa-edit"></i></button>
+                                                </div>
+
+                                                <div class="btn-group" >
+
+                                                    <button (click)="saveCantMeta(item)" *ngIf="item.action" tooltip="Guardar" 
+                                                    class="btn btn-success btn-sm"><i class="fa fa-save"></i></button>
+                                                    
+                                                    <button (click)="cancelCantMeta(item)" *ngIf="item.action" tooltip="Cancelar"
+                                                    class="btn bg-black btn-sm"><i class="fa fa-times-circle"></i></button>
+                                                </div>
+                                                
+                                            </td>
+                                        </tr>
+                                        <tr class="table-dark" >
+                                            <td colspan="5" class="text-center">Suma Total</td>
+                                            <td class="text-center">{{totalCantOfMeta}}</td>
+                                            <td class="text-center text-success">
+                                                <button *ngIf="(periodPrograming?.periodoMeta - totalCantOfMeta) == 0"  
+                                                    class="btn btn-success btn-sm">Completado</button>
+                                            </td>
+                                        </tr>
+
+                                    </tbody>
+                                </table>  
+                            </div>
+                            <!-- /.form-group -->
+                        </div>
+                    </div>
+                    
+                    <!-- Modal footer -->
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Salir</button>
+                        <!-- <button type="submit" name="submit" class="btn btn-primary" id="submit-button">Guardar</button> -->
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Update Notifying Responsible Modal -->
+<div id="modalUpdateNotifyingResponsible" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+                <!-- Modal Header -->
+                <div class="modal-header" style="background:#6C757D; color: white">
+                    <h4 class="modal-title">Responsable Notificación</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+
+                <!-- Modal body -->
+                <div class="modal-body">
+                    <div class="modal-body text-center">
+                        <div class="card-body">
+                            <div class="form-group">
+                                <label>Responsable:</label>
+                                <div class="input-group ">
+                                    <select  class="form-control " style="background:white" [(ngModel)]="idUser"  required>
+                                        <option value="">Seleccionar Responsable</option>
+                                        <option *ngFor="let item of user" value="{{item.id}}">{{item.name}} {{item.lastName}} {{item.lastMotherName}}</option>
+                                    </select>
+                                    <span class="input-group-append">
+                                        <button type="button" class="btn btn-info btn-flat" 
+                                        tooltip="Agregar Responsable"
+                                        (click)="addResponsibleAssign()">+</button>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                            <!-- /.form-group -->
+                    </div>
+                    
+                    <div class="modal-body">
+                        <div class="card-body">
+                            <div class="form-group">
+                                <table class="table table-bordered  shadow table-hover dt-responsive " id="">
+                                    <thead>
+                                        <tr>
+                                            <th style="width:400px;">Responsable</th>
+                                            <th style="width:100px;">E-MAIL</th>
+                                            <th class="text-center" style="width:200px;">Acción</th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>     
+                                        <tr *ngFor="let item of responsibleAssign;let i=index">
+                                            <td>{{item.name}}</td>
+                                            <td>{{item.email}}</td>
+                                            <td class="text-center">
+                                                <div class="btn-group">
+                                                    <button class="btn btn-danger btn-sm " 
+                                                    tooltip="Eliminar Responsable"
+                                                    (click)="deleteResponsibleAssign(item.id)">
+                                                    <i class="fa fa-trash-alt"></i>
+                                                    </button>
+                                                </div>
+                                            </td>
+                                        </tr>
+
+                                    </tbody>
+                                </table>  
+                            </div>
+                            <!-- /.form-group -->
+                        </div>
+                        <!-- /.col -->
+                    </div>
+
+                    <!-- Modal footer -->
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Salir</button>
+                    </div>
+                </div>
+        
+        </div>
+    </div>
+</div>
+
+<!-- Update ReassignResponsible Modal -->
+<div id="modalReassignResponsible" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <form role="form" method="post" enctype="multipart/form-data">
+                <!-- Modal Header -->
+                <div class="modal-header" style="background:#3c8dbc; color: white">
+                    <h4 class="modal-title">Reasignar Responsable:</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+
+                <!-- Modal body -->
+                <div class="modal-body">
+                    <div class="modal-body text-center">
+                        <div class="card-body">
+                            <div class="form-group">
+                                <label>Responsable:</label>
+                                <input type="text" class="form-control input-lg" id="name" name="name" value="Miguel Grau Seminario" readonly>
+                            </div>
+                            <!-- /.form-group -->
+                        </div>
+                        <!-- /.col -->
+                    </div>
+                    <div class="modal-body text-center">
+                        <div class="card-body">
+                            <div class="form-group">
+                                <label>Reasignar nuevo Responsable:</label>
+                                    <select class="form-control" style="background:white" id="" name="" required>
+                                        <option value="">Seleccionar Responsable</option>
+                                        <option value="">Andres Abelino Caceres Dorregaray</option>
+                                        <option value="">Gian Piero Vasquez Puente</option>
+                                        <option value="">Ricardo Cardenas Torres</option>
+                                    </select>
+                            </div>
+                        </div>
+                            <!-- /.form-group -->
+                    </div>
+
+                    <!-- Modal footer -->
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Salir</button>
+                        <button type="button" name="" class="btn btn-primary" id="" (click)="newContract()">Guardar</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

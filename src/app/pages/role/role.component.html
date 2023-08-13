@@ -1,0 +1,153 @@
+<!-- Content Header (Page header) -->
+<div class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1 class="m-0">Role <i class="nav-icon fas fa-file-signature"></i></h1>
+            </div><!-- /.col -->
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                    <li class="breadcrumb-item"><a href="dashboard">Inicio</a></li>
+                    <li class="breadcrumb-item active">Rol</li>
+                </ol>
+            </div><!-- /.col -->
+        </div><!-- /.row -->
+    </div><!-- /.container-fluid -->
+</div>
+<!-- /.content-header -->
+
+<!-- Main content -->
+<section class="content">
+    <div class="card">
+        <div class="card-header with-border">
+            <button class="btn btn-primary " data-toggle="modal" data-target="#modalNuevoRol">
+                Nuevo Rol
+            </button>
+        </div>
+    <br>
+
+    <div class="card-body">
+    <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="row-border hover table table-bordered  shadow table-hover">
+     <thead>
+        <tr>
+            <th style="width:150px">#</th>
+            <th>Descripción</th>
+            <th style="width:10px">Estado</th>
+            <th style="width:10px">Acciones</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        <tr *ngFor="let item of role; let i=index" >
+            <td>{{i+1}}</td>
+            <!-- <td>
+                {{item.id}}
+            </td> -->
+   
+            <td>
+                {{item.description }}
+            </td>
+            <td>
+                <button [ngClass]="{ 'btn-success': item.commonTables.state, 'btn-danger': !item.commonTables.state }"
+                        class="btn btn-sm" (click)="changeRoleState(item.id)">
+                        {{ item.commonTables.state ? 'Activo' : 'Inactivo' }}
+                </button>
+              </td>
+            <td>
+                <div class="btn-group">
+                    <button class="btn btn-warning btn-sm btnEditarUsuario" (click)="openEditModal(item.id)" data-toggle="modal" data-target="#modalEditarRol">
+                        <i class="fa fa-pen"></i>
+                    </button>
+
+                    <button class="btn btn-danger btn-sm btnEliminarUsuario" (click)="deleteRole(item.id)" >
+                    <i class="fa fa-trash-alt"></i></button>
+                </div>
+            </td>
+        </tr>
+
+    </tbody> 
+    </table>
+    </div>
+    </div>
+</section>
+
+<!-- New Type Contact Modal -->
+
+<div id="modalNuevoRol" class="modal fade" >
+    <div class="modal-dialog">
+        <div class="modal-content">
+        <form (ngSubmit)="newRole(newForm.value)" [formGroup]="newForm"  autocomplete="off">
+            <!-- Modal Header -->
+                <div class="modal-header" style="background:#343a40; color: white">
+                    <h4 class="modal-title">Nuevo Tipo de Contrato</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+
+                <!-- Modal body -->
+                <div class="modal-body">
+                        <!-- Entrada descripción -->
+                        <div class="form-group">
+                            <label>Descripción:</label>
+                            <div class="input-group">
+                                <input type="text" formControlName="description" class="form-control input-lg" placeholder="Ingresar Descripcion" requerid>
+                            </div>
+                        </div>
+                </div>
+                <!-- Modal footer -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Salir</button>
+                    <button type="submit" class="btn btn-primary" [disabled]="newForm.invalid">Guardar</button>
+                </div>
+        </form>
+        </div>
+    
+    </div>
+</div>
+
+<!-- Edit Type Contract Modal -->
+
+<div id="modalEditarRol" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <form (ngSubmit)="UpdateRole(editForm.value)" [formGroup]="editForm" autocomplete="off">
+                <!-- Modal Header -->
+                <div class="modal-header" style="background:#343a40; color: white">
+                    <h4 class="modal-title">Editar Tipo de Contrato</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+
+                <!-- Modal body -->
+                <div class="modal-body">
+                    <div class="box-body">
+                        <!-- Entrada nombre -->
+                        <div class="col-12 col-sm-12">
+                            <div class="form-group">
+                            <label>Código:</label>
+                                <div class="input-group">
+                                    <input type="text" class="form-control input-lg" formControlName="id"  placeholder="Id" readonly>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-12 col-sm-12">
+                            <!-- Entrada descripción -->
+                            <div class="form-group">
+                            <label>Descripción:</label>
+                                <div class="input-group">
+                                    <input type="text" formControlName="description" class="form-control input-lg" placeholder="Ingresar Descripcion" required>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <!-- Modal footer -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Salir</button>
+                    <button type="submit" class="btn btn-primary" >Guardar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

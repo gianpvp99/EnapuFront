@@ -1,0 +1,238 @@
+<!-- Content Header (Page header) -->
+<div class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1 class="m-0">Unidad <i class="nav-icon fas fa-weight-hanging"></i></h1>
+            </div><!-- /.col -->
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                    <li class="breadcrumb-item"><a href="home">Inicio</a></li>
+                    <li class="breadcrumb-item active">Unidad</li>
+                </ol>
+            </div><!-- /.col -->
+        </div><!-- /.row -->
+    </div><!-- /.container-fluid -->
+</div>
+<!-- /.content-header -->
+
+
+<section class="content">
+<div class="card">
+<div class="card-header with-border">
+    <button class="btn btn-primary btnAgregarUsuario" data-toggle="modal" data-target="#modalNewUnit">
+        Nueva Unidad
+    </button>
+</div>
+<br>
+
+<div class="card-body">
+<table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="row-border hover table table-bordered  shadow table-hover">
+    <thead>
+        <tr>
+            <th style="width:150px">#</th>
+            <th style="width:500px">Unidad</th>
+            <th style="width:10px" class="text-center">Estado</th>
+            <th style="width:10px" class="text-center">Acciones</th>
+        </tr>
+    </thead>
+
+<tbody>
+    <tr *ngFor="let item of units; let i=index">
+        <td>{{i+1}}</td>
+        <td>{{item.description}}</td>
+        <td class="text-center">
+            <button [ngClass]="{ 'btn-success': item.commonTables.state, 'btn-danger': !item.commonTables.state }"
+                    class="btn btn-sm" (click)="changeTypeContractState(item.id)">
+                    {{ item.commonTables.state ? 'Activo' : 'Inactivo' }}
+            </button>
+        </td>
+        <td class="text-center">
+            <div class="btn-group">
+                <button tooltip="Nueva unidad de medida" class="btn btn-info btn-sm" (click)="openEditModal2(item.id)" data-toggle="modal" data-target="#modalEditarUnidadMedida"><i class="fa fa-tag"></i></button>    
+                <button tooltip="Editar unidad" class="btn btn-warning btn-sm"  (click)="openEditModal(item.id)"  data-toggle="modal" data-target="#modalEditarUnidad" ><i class="fa fa-pen"></i></button>
+                <button tooltip="Eliminar unidad" class="btn btn-danger btn-sm" (click)="deleteUnit(item.id)"  ><i class="fa fa-trash-alt"></i></button>
+            </div>
+        </td>
+    </tr>
+
+</tbody>
+</table>
+</div>
+
+</div>
+</section>
+
+<!-- New Unit Modal -->
+<div id="modalNewUnit" class="modal fade" role="dialog">
+<div class="modal-dialog">
+<div class="modal-content">
+
+    <form (ngSubmit)="newUnit(newForm.value)" [formGroup]="newForm"  autocomplete="off">
+        <!-- Modal Header -->
+        <div class="modal-header" style="background:#343a40; color: white">
+            <h4 class="modal-title">Nueva Unidad</h4>
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+        </div>
+
+        <!-- Modal body -->
+        <div class="modal-body">
+            <div class="modal-body">
+
+                <!-- Entrada nombre -->
+                <div class="form-group">
+                    <div class="form-group">
+                        <label>Unidad:</label>
+                        <input type="text" formControlName="description" class="form-control input-lg" placeholder="Ingresar nombre de la Unidad" required>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Modal footer -->
+        <div class="modal-footer">
+            <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Salir</button>
+            <button type="submit" class="btn btn-primary" [disabled]="newForm.invalid" >Guardar</button>
+        </div>
+    </form>
+</div>
+</div>
+</div>
+
+<!-- Edit Unit  Modal -->
+
+<div id="modalEditarUnidad" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <form (ngSubmit)="UpdateUnit(editForm.value)" [formGroup]="editForm" autocomplete="off">
+                <!-- Modal Header -->
+                <div class="modal-header" style="background:#343a40; color: white">
+                    <h4 class="modal-title">Editar Unidad</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+
+                <!-- Modal body -->
+                <div class="modal-body">
+                    <div class="box-body">
+
+                        <!-- Entrada id -->
+                        <div class="form-group">
+                            <div class="form-group">
+                                <!-- <label>ID:</label> -->
+                                <input type="hidden" formControlName="id" class="form-control input-lg" required readonly>
+                            </div>
+                        </div>
+
+                        <!-- Entrada descripción -->
+                        <div class="form-group">
+                            <div class="form-group">
+                                <label>Unidad:</label>
+                                <input type="text" formControlName="description" class="form-control input-lg" placeholder="Ingresar nombre de la Unidad" required>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Modal footer -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Salir</button>
+                    <button type="submit" class="btn btn-primary">Guardar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- New Unit Measurement Modal Extent-->
+<div id="modalEditarUnidadMedida" class="modal fade" role="dialog">
+    <div class="modal-dialog ">
+        <div class="modal-content">
+
+            <form [formGroup]="idForm"  autocomplete="off">
+                <!-- Modal Header -->
+                <div class="modal-header" style="background:#343a40; color: white">
+                    <h4 class="modal-title">Nueva Unidad de Medida</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+
+                <!-- Modal body -->
+                <div class="modal-body">
+                    <div class="modal-body">
+                        <!-- Entrada medida -->
+                        <div class="form-group">
+                            
+                            <div class="form-group">
+                                <div class="input-group">            
+                                    <input type="hidden" formControlName="id" class="form-control input-lg" required readonly>
+                                    <input type="text" formControlName="description" class="form-control input-lg" required readonly>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+            <form [formGroup]="newUnitMeasure"  autocomplete="off">
+
+                <!-- Modal body -->
+                <div class="modal-body">
+                    <div class="modal-body">
+                        <!-- Entrada medida -->
+                        <div class="form-group">
+                            
+                            <div class="form-group">
+                                <div class="input-group">
+                                    <input type="hidden" formControlName="idUnit" class="form-control input-lg" required>
+                                    <input type="text" formControlName="description" class="form-control input-lg" placeholder="Ingresar Unidad de medida" required>
+                                    <span class="input-group-append">
+                                        <button type="button" (click)="newUnitMeasurement(newUnitMeasure.value)" class="btn btn-info ">+</button>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="card-body">
+                                <div class="form-group ">
+                                    <div class="form-group">
+                                        <table class="row-border hover table table-bordered  shadow table-hover">
+                                            <thead>
+                                                <tr>
+                                                    <th style="width:150px">#</th>
+                                                    <th style="width:300px;">Unidad Medida</th>
+                                                    <th style="width:200px;">Estado</th>
+                                                    <th style="width:200px;">Acciones</th>
+                                                </tr>
+                                            </thead>
+        
+                                            <tbody>
+                                                <tr *ngFor="let item of unitMeasurement; let i=index">
+                                                    <td>{{i+1}}</td>
+                                                    <td>{{item.description}}</td>
+                                                    <td class="text-center"><button class="btn btn-sm btn-success" > Activo
+                                                        </button>
+                                                    </td>
+                                                    <td class="text-center">
+                                                        <div class="btn-group">
+                                                            <button type="button" class="btn btn-danger" (click)="deleteUnitMeasure(item.id)">
+                                                                <i class="fa fa-trash-alt"></i>
+                                                            </button>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- /.form-group -->
+                        </div>
+                        <!-- Modal footer -->
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Salir</button>
+                            <!-- <button type="submit" class="btn btn-primary" id="submit-button">Guardar</button> -->
+                        </div>
+                    </div>
+                </div>
+            </form>
+ 
+        </div>
+    </div>
+</div>
